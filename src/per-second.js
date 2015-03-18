@@ -59,7 +59,7 @@ var PerSecond = React.createClass({
 });
 
 var numberStyle = {
-	minWidth: "50vw",
+	minWidth: "53vw",
 	display: "flex"
 };
 
