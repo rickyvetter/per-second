@@ -1,21 +1,23 @@
 var React = require("react");
 var PerSecond = require("./per-second");
-var trend = require("trend");
-
-var timer;
 
 var app = React.createClass({
 	render: function() {
 		var historicalData = [483685,519120,530555,493676,626811];
 
-		var growth = trend(historicalData, {
-		    lastPoints: 1,
-		    avgPoints: historicalData.length - 1,
-		    avgMinimum: -Infinity
-		});
+		var count = 0;
+		var growthTotal = historicalData.reduce(function(trend, data, index, array) {
+			var nextIndex = index + 1;
+			if(array[nextIndex] && data !== 0) {
+				var growth = array[nextIndex]/data;
+				trend += growth*nextIndex;
+				count += nextIndex;
+			}
+			return trend;
+		}, 0);
+		var growth = growthTotal/count;
 
 		var prediction = growth ? growth * historicalData[historicalData.length -1] : historicalData[historicalData.length -1];
-
 		return (
 			<div style={containerStyle}>
 				<PerSecond amount={prediction} />
@@ -35,7 +37,7 @@ var containerStyle = {
 	alignItems: "center",
 	backgroundColor: "#494949",
 	color: "#cb5599",
-	fontSize: "3rem"
+	fontSize: "10vw"
 };
 
 var hashtagStyle = {

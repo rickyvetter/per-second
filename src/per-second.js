@@ -59,12 +59,12 @@ var PerSecond = React.createClass({
 });
 
 var numberStyle = {
-	minWidth: 300,
+	minWidth: "50vw",
 	display: "flex"
 };
 
 var centsStyle = {
-	fontSize: "1.5rem"
+	fontSize: "5vw"
 };
 
 module.exports = PerSecond;

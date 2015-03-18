@@ -23177,31 +23177,11 @@ module.exports = warning;
 },{"./emptyFunction":"/Users/rickyvetter/code/st/per-second/node_modules/react/lib/emptyFunction.js","_process":"/Users/rickyvetter/code/st/per-second/node_modules/browserify/node_modules/process/browser.js"}],"/Users/rickyvetter/code/st/per-second/node_modules/react/react.js":[function(require,module,exports){
 module.exports = require('./lib/React');
 
-},{"./lib/React":"/Users/rickyvetter/code/st/per-second/node_modules/react/lib/React.js"}],"/Users/rickyvetter/code/st/per-second/node_modules/trend/index.js":[function(require,module,exports){
-module.exports = function(arr, options) {
-	options = options || {};
-	options.lastPoints = options.lastPoints || 1;
-	options.avgPoints = options.avgPoints || 10;
-
-	if (arr.length < options.lastPoints + options.avgPoints) return null;
-
-	var lastArr = options.reversed ? arr.slice(0, options.lastPoints) : arr.slice(arr.length - options.lastPoints, arr.length);
-	var chartArr = options.reversed ? arr.slice(options.lastPoints, options.lastPoints+options.avgPoints) : arr.slice(arr.length - options.lastPoints - options.avgPoints, arr.length - options.lastPoints);
-
-	var chartAvg = chartArr.reduce(function(res, val) { return res += val }) / chartArr.length;
-	var lastAvg = Math.max.apply(null, lastArr);
-
-	if (options.avgMinimum !== undefined && chartAvg < options.avgMinimum) return null;
-	return lastAvg/chartAvg;
-};
-},{}],"/Users/rickyvetter/code/st/per-second/src/app.js":[function(require,module,exports){
+},{"./lib/React":"/Users/rickyvetter/code/st/per-second/node_modules/react/lib/React.js"}],"/Users/rickyvetter/code/st/per-second/src/app.js":[function(require,module,exports){
 "use strict";
 
 var React = require("react");
 var PerSecond = require("./per-second");
-var trend = require("trend");
-
-var timer;
 
 var app = React.createClass({
 	displayName: "app",
@@ -23209,14 +23189,19 @@ var app = React.createClass({
 	render: function render() {
 		var historicalData = [483685, 519120, 530555, 493676, 626811];
 
-		var growth = trend(historicalData, {
-			lastPoints: 1,
-			avgPoints: historicalData.length - 1,
-			avgMinimum: -Infinity
-		});
+		var count = 0;
+		var growthTotal = historicalData.reduce(function (trend, data, index, array) {
+			var nextIndex = index + 1;
+			if (array[nextIndex] && data !== 0) {
+				var growth = array[nextIndex] / data;
+				trend += growth * nextIndex;
+				count += nextIndex;
+			}
+			return trend;
+		}, 0);
+		var growth = growthTotal / count;
 
 		var prediction = growth ? growth * historicalData[historicalData.length - 1] : historicalData[historicalData.length - 1];
-
 		return React.createElement(
 			"div",
 			{ style: containerStyle },
@@ -23238,7 +23223,7 @@ var containerStyle = {
 	alignItems: "center",
 	backgroundColor: "#494949",
 	color: "#cb5599",
-	fontSize: "3rem"
+	fontSize: "10vw"
 };
 
 var hashtagStyle = {
@@ -23250,7 +23235,7 @@ var hashtagStyle = {
 
 module.exports = app;
 
-},{"./per-second":"/Users/rickyvetter/code/st/per-second/src/per-second.js","react":"/Users/rickyvetter/code/st/per-second/node_modules/react/react.js","trend":"/Users/rickyvetter/code/st/per-second/node_modules/trend/index.js"}],"/Users/rickyvetter/code/st/per-second/src/index.js":[function(require,module,exports){
+},{"./per-second":"/Users/rickyvetter/code/st/per-second/src/per-second.js","react":"/Users/rickyvetter/code/st/per-second/node_modules/react/react.js"}],"/Users/rickyvetter/code/st/per-second/src/index.js":[function(require,module,exports){
 "use strict";
 
 var React = require("react");
@@ -23326,12 +23311,12 @@ var PerSecond = React.createClass({
 });
 
 var numberStyle = {
-	minWidth: 300,
+	minWidth: "50vw",
 	display: "flex"
 };
 
 var centsStyle = {
-	fontSize: "1.5rem"
+	fontSize: "5vw"
 };
 
 module.exports = PerSecond;
