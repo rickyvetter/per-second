@@ -1,0 +1,22 @@
+{
+  "name": "per-second",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify src/index.js -t babelify -o index.js",
+    "dev": "watchify src/index.js -t babelify -o index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "accounting": "^0.4.1",
+    "babelify": "^5.0.4",
+    "browserify": "^9.0.3",
+    "moment": "^2.9.0",
+    "react": "^0.13.1",
+    "trend": "^0.3.0",
+    "watchify": "^2.4.0"
+  }
+}
